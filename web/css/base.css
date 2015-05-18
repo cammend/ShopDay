@@ -1,0 +1,75 @@
+*{
+	margin: 0;
+	padding: 0;
+	font-family: Helvetica, Arial;
+        color: rgb(30,30,50);
+}
+body{
+	background-image: url("../img/Aquarius.png");
+}
+
+#cuerpo{
+	margin:0 auto;
+	overflow: hidden;
+	width: 90%;
+	max-width: 400px;
+}
+#logo{
+	background: rgba(255,255,255,0.5);
+	display: block;
+	width: 100%;
+	padding: 13px 0px 13px 0px;
+	margin-top: 20px;
+	border-radius: 5px;
+	text-align: center;
+}
+#logo h1 a{
+    text-decoration: none;
+}
+#div-inicia-sesion{
+	background: rgba(255,255,255,0.5);
+	float: right;
+	display: block;
+	margin-top: 20px;
+	padding: 5px auto;
+	width: 100%;
+	text-align: center;
+	border-radius: 5px;
+}
+#div-inicia-sesion form input{
+	background: rgba(255,255,255,0.5);
+	border-radius: 2px;
+	display: block;
+	margin: 10px auto;
+	height: 30px;
+	width: 90%;
+}
+#div-inicia-sesion form label{
+	margin-top: 15px;
+}
+#div-inicia-sesion p{
+	text-shadow: 5px 5px 5px;
+	font-size: 20px;
+	margin: 10px;
+	padding-bottom: 10px;
+}
+
+#pie{
+    background: rgba(50,50,50,0.7);
+    display: block;
+    float: right;
+    width: 100%;
+    margin-bottom: 15px;
+    margin-top: 15px;
+    padding: 5px;
+    text-align: center;
+}
+
+@media screen and (max-width: 500px){
+	#navegacion{
+		width: 100%;
+	}
+	#logo-menu{
+		widht: 100%;
+	}
+}
