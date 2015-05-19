@@ -47,9 +47,6 @@ public class ConexionDB {
             //JOptionPane.showMessageDialog(null, ex, "Error3 en la Conexión con la BD "+ex.getMessage(), JOptionPane.ERROR_MESSAGE);
             conexion=null;
         }
-        finally
-        {
-            return conexion;
-        }
+        return conexion;
     }
 }

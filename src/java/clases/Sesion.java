@@ -7,7 +7,6 @@ package clases;
 
 import clases.util.Archivo;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  *

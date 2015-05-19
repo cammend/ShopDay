@@ -6,10 +6,11 @@
 package clases.DB;
 
 import clases.util.Archivo;
+
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.util.Date;
+import java.util.Calendar;
 
 /**
  *
@@ -85,10 +86,10 @@ public class IODB {
     
     //métodos útiles
     private static String getFechaHoy(){
-        Date fecha = new Date();
-        String a = String.valueOf(fecha.getYear()+1900);
-        String m = String.valueOf(fecha.getMonth()+1);
-        String d = String.valueOf(fecha.getDate());
+        Calendar fecha = Calendar.getInstance();
+        String a = String.valueOf(fecha.get(Calendar.YEAR));
+        String m = String.valueOf(fecha.get(Calendar.MONTH)+1);
+        String d = String.valueOf(fecha.get(Calendar.DAY_OF_MONTH));
         String f = a+"-"+m+"-"+d;
         return f;
     }
