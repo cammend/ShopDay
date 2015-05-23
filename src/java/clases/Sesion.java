@@ -5,7 +5,11 @@
  */
 package clases;
 
+import java.util.ArrayList;
+
+import clases.DB.IODB;
 import clases.util.Archivo;
+
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -13,16 +17,29 @@ import javax.servlet.http.HttpServletRequest;
  * @author cammend
  */
 public class Sesion {
-    public static final String ATTR_ERROR_REGISTRO= "ErrorRegistro";
-    public static final String ATTR_NOMBRE_USUARIO= "NombreUsuario";
-
-    public static String getAttr(HttpServletRequest request, String attr){
+    public static final String ATTR_ERROR= "Error";
+    public static final String ATTR_CODIGO_USUARIO= "CodigoUsuario";
+    public static final String ATTR_DATOS_FORM= "DatosForm";
+    private static HttpServletRequest request;
+    
+    public static void init(HttpServletRequest rq){
+    	request = rq;
+    }
+    
+    public static void cerrar(){
+    	if( haySesion() ){
+    		request.getSession().removeAttribute(ATTR_CODIGO_USUARIO);
+    	}
+    }
+    
+    public static String getAttr(String attr){
         if( request.getSession() != null ){
             Object obj = request.getSession().getAttribute(attr);
             if( obj != null ){
-              return String.valueOf(obj);
+            	Archivo.guardarCadena("getAttr("+attr+"): "+String.valueOf(obj));
+            	return String.valueOf(obj);
             }else{
-                Archivo.guardarCadena("No existe atributo ErrorRegistro");
+                Archivo.guardarCadena("No existe atributo "+attr);
             }
         }else{
             Archivo.guardarCadena("No hay sesión");
@@ -30,9 +47,95 @@ public class Sesion {
         return null;
     }
     
-    public static void setAttr(HttpServletRequest request, String attr, Object valor){
+    public static void setAttr(String attr, Object valor){
         if( request.getSession() != null ){
             request.getSession().setAttribute(attr, valor);
         }
+    }
+    
+    public static String[] getArrayAttr(String attr){
+    	Object obj;
+    	if( request.getSession() != null ){
+            obj = request.getSession().getAttribute(attr);
+            if(obj != null){
+            	if(obj instanceof ArrayList<?>){
+            		ArrayList<Object> datos = (ArrayList<Object>)obj;
+            		ArrayList<String> piv = new ArrayList<String>();
+            		for(int i=0; i<datos.size(); i++){
+            			piv.add(String.valueOf(datos.get(i)));
+            		}
+            		String[] enviar = new String[piv.size()+1];
+            		for(int i=0; i<piv.size(); i++){
+            			enviar[i] = piv.get(i);
+            		}
+            		return enviar;
+            	}
+            }
+        }
+    	return null;
+    }
+    
+    public static void setAttr(String attr, Object valor[]){
+    	ArrayList<Object> valores = new ArrayList();
+    	for(int i=0; i<valor.length; i++){
+    		valores.add(valor[i]);
+    	}
+    	if( request.getSession() != null ){
+            request.getSession().setAttribute(attr, valores);
+        }
+    }
+    
+    public static int getError(){
+    	String err = getAttr(ATTR_ERROR);
+    	if(err!=null){
+    		return Integer.parseInt(err);
+    	}
+    	return -1;
+    }
+    
+    public static void setError(int Error){
+    	setAttr(ATTR_ERROR,Error);    	
+    }
+    
+    public static void limpiar(){
+    	if( hayError() ){
+    		request.getSession().removeAttribute(ATTR_ERROR);
+    	}else if( hayDatosForm() ){
+    		request.getSession().removeAttribute(ATTR_DATOS_FORM);
+    	}
+    }
+    
+    public static boolean hayError(){
+    	return hayAttr(ATTR_ERROR);
+    }
+    public static boolean haySesion(){
+    	return hayAttr(ATTR_CODIGO_USUARIO);
+    }
+    
+    public static boolean hayDatosForm(){
+    	return hayAttr(ATTR_DATOS_FORM);
+    }
+    
+    private static boolean hayAttr(String attr){
+    	if(request.getSession().getAttribute(attr)!=null){
+    		return true;
+    	}
+    	return false;
+    }
+    
+    public static int getCodigoUsuario(){
+    	if( haySesion() ){
+    		return Integer.parseInt(String.valueOf(request.getSession().getAttribute(ATTR_CODIGO_USUARIO)));
+    	}
+    	return -1;
+    }
+    
+    public static String getAliasUsuario(){
+    	Object datos[];
+    	datos = IODB.getDatosUsuario(getCodigoUsuario());
+    	if(datos!=null){
+    		return String.valueOf(datos[3]);
+    	}
+    	return null;
     }
 }

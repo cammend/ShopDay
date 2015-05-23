@@ -10,9 +10,8 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%
     String err = Archivo.guardarCadena("Inicio de aplicacion");
-    String alias = Sesion.getAttr(request, Sesion.ATTR_NOMBRE_USUARIO);
-    alias = null;
-    if( alias != null ){
+	Sesion.init(request);
+    if( Sesion.haySesion() ){
         Redirect.redireccionar("inicio.html", request, response);
     }
 %>

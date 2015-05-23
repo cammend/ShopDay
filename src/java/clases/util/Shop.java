@@ -21,7 +21,7 @@ public class Shop {
             switch(u){
                 case "cammend-pc": return "/home/cammend/shopday.log";
                 default: return "/home/ubuntu/shopday.log";
-            }            
+            }
         }
         return null;
     }
@@ -32,13 +32,20 @@ public class Shop {
         return "/ShopDay";
     }
     public static String getHostDB(){
-        return "jdbc:mysql://127.0.0.1/shopday";
+        return "jdbc:mysql://127.0.0.1/ShopDay";
     }
     public static String userDB(){
         return "root";
     }
     public static String passDB(){
-        return "chopday1801";
+    	String u = getUname();
+        if( u != null ){
+            switch(u){
+                case "cammend-pc": return "root";
+                default: return "chopday1801";
+            }
+        }
+        return null;
     }
     public static String getDB(){
         return "shopday";

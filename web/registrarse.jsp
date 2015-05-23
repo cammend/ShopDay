@@ -9,20 +9,41 @@
 <%@page import="clases.util.Archivo"%>
 <%@page import="clases.Error"%>
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
+<%
+Sesion.init(request); //inicializando la sesion
+int codError = Sesion.getError();
+%>
 <!DOCTYPE html>
 <html lang="es">
 <head>
 <title>Shop Day - Registro</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<script type="text/javascript" src="js/validacion.js"></script>
 <link rel="stylesheet" href="css/base.css">
+<script type="text/javascript">
 <%
-  String err = Sesion.getAttr(request, Sesion.ATTR_ERROR_REGISTRO);
-  int codError = -1;
-  if( err != null ){
-      codError = Integer.parseInt( err );
-  }  
+if( Sesion.hayDatosForm() ){
+	String datosForm[] = Sesion.getArrayAttr(Sesion.ATTR_DATOS_FORM);
+	if(datosForm.length>0){
+		out.println("document.getElementById('correo').value='"+datosForm[0]+"'");
+		out.println("document.getElementById('nombre').value='"+datosForm[1]+"'");
+		out.println("document.getElementById('alias').value='"+datosForm[2]+"'");
+		if(codError == Error.CORREO){
+		    out.println("document.getElementById('correo').value=''");
+		    out.println("document.getElementById('correo').focus();");
+		}else if(codError == Error.ALIAS){
+		    out.println("document.getElementById('alias').value=''");
+		    out.println("document.getElementById('alias').focus();");
+		}else if(codError == Error.ALIAS_CORREO){
+		    out.println("document.getElementById('correo').value=''");
+		    out.println("document.getElementById('alias').value=''");
+		    out.println("document.getElementById('correo').focus();");
+		}
+	}
+}
 %>
+</script>
 <style>
   #error{
       background: rgba(255,0,0,0.7);
@@ -73,15 +94,15 @@
         <p><strong>Nuevo Usuario</strong></p>
         <form name="sesion" method="post" action="comprobar-registro">
             <label>Correo Electrónico</label>
-            <input type="text" name="correo" >
+            <input type="text" name="correo" id="correo" placeholder="Escriba su dirección de correo electrónico" required>
             <label>Nombre Completo</label>
-            <input type="text" name="nombre" >
+            <input type="text" name="nombre" id="nombre" placeholder="Escriba su nombre completo" required>
             <label>Nombre Usuario</label>
-            <input type="text" name="alias" >
+            <input type="text" name="alias" id="alias" placeholder="Escriba un alias o nickname" required>
             <label>Contraseña</label>
-            <input type="password" name="pass" >
+            <input type="password" name="pass" id="pass" placeholder="Escriba su contraseña" required>
             <label>Confirmar Contraseña</label>
-            <input type="password" name="pass2" >
+            <input type="password" name="pass2" id="pass2" placeholder="Repetir contraseña" onblur="validarPassword('pass','pass2')" required>
             <input type="submit" value="Registrar">
         </form>
     </div>
@@ -95,7 +116,5 @@
 </html>
 
 <%
-  if(request.getSession()!=null){
-      request.getSession().removeAttribute(Sesion.ATTR_ERROR_REGISTRO);
-  }
+Sesion.limpiar();
 %>

@@ -15,7 +15,7 @@ import java.sql.Connection;
  */
 public class Core {
     private Connection conexion = null;
-    
+    //clase de prueba aún no usada
     public void conectarDB(){
         conexion = ConexionDB.getConnection();
         if( conexion != null ){

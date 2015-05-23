@@ -6,7 +6,6 @@
 package servlets;
 
 import clases.util.Archivo;
-import clases.DB.ConexionDB;
 import clases.Error;
 import clases.DB.IODB;
 import clases.Redirect;
@@ -14,9 +13,6 @@ import clases.Sesion;
 import clases.util.Shop;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.Statement;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -40,15 +36,19 @@ public class comprobarRegistro extends HttpServlet {
      */
     
     
-    private Connection conexion = null;
-    private Statement st = null;
-    private ResultSet rs = null;
     private HttpSession sesion = null;
+    private String DatosFormulario[];
+    private HttpServletRequest request = null; 
+    private HttpServletResponse response = null;
     
     
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         sesion = request.getSession();
+        this.request = request;
+        this.response = response;
+        Sesion.init(request); //inicializando la sesion
+        
         response.setContentType("text/html;charset=UTF-8");
         //comprobamos las variables del formulario
         String correo = request.getParameter("correo");
@@ -56,6 +56,7 @@ public class comprobarRegistro extends HttpServlet {
         String alias  = request.getParameter("alias");
         String pass   = request.getParameter("pass");
         String pass2  = request.getParameter("pass2");
+        
         if(correo == null){ //si los parametros estan en null
             Redirect.irA(Shop.getApp()+"/registrarse.html", request, response);
             return;
@@ -64,9 +65,10 @@ public class comprobarRegistro extends HttpServlet {
             Redirect.irA(Shop.getApp()+"/registrarse.html", request, response);
             return;
         }else{
+        	DatosFormulario = new String[] {correo,nombre,alias};
             //si todos los campos viene llenos comprobamos si las contraseñas coinciden
             if(!pass.equals(pass2)){
-                sesion.setAttribute(Sesion.ATTR_ERROR_REGISTRO , Error.PASSWORD_N_COINCIDEN);
+                sesion.setAttribute(Sesion.ATTR_ERROR , Error.PASSWORD_N_COINCIDEN);
                 Redirect.irA(Shop.getApp()+"/registrarse.html", request, response);
                 return;
             }
@@ -77,12 +79,17 @@ public class comprobarRegistro extends HttpServlet {
             case Error.OK :{
                 try{  //ingresamos los datos a la DB
                     if( IODB.nuevoUsuario(correo, nombre, alias, pass) ){
-                        //si ingresó el usuario redireccionamos a la pagina principal
+                    	int codigo = IODB.getCodUsuario(alias);
+                    	if(codigo == -1){//quiere decir que hay error
+                    		Archivo.guardarCadena("Error obteniendo codigo de usuario");
+                    	}
+                        //Agregamos una variable de sesión
+                    	Sesion.setAttr(Sesion.ATTR_CODIGO_USUARIO, codigo);
+                    	//si ingresó el usuario redireccionamos a la pagina principal
+                    	Redirect.redireccionar("/inicio.html", request, response);
                     }else{
                         mostrarPaginaError(response); //mostramos la página de error
                     }
-                    //agregamos a la sesion el nombre de usuario
-                    Sesion.setAttr(request, Sesion.ATTR_NOMBRE_USUARIO, alias);
                 }catch(Exception ex){
                     Archivo.guardarCadena(ex.getMessage());
                     ex.printStackTrace();
@@ -90,20 +97,27 @@ public class comprobarRegistro extends HttpServlet {
                 return;
             }
             case Error.ALIAS:{
-                sesion.setAttribute(Sesion.ATTR_ERROR_REGISTRO, Error.ALIAS);
-                Redirect.irA(Shop.getApp()+"/registrarse.html", request, response);
+                error(Error.ALIAS);
                 return;
             }
             case Error.CORREO:{
-                sesion.setAttribute(Sesion.ATTR_ERROR_REGISTRO, Error.CORREO);
-                Redirect.irA(Shop.getApp()+"/registrarse.html", request, response);
+                error(Error.CORREO);
                 return;
             }case Error.ALIAS_CORREO:{
-                sesion.setAttribute(Sesion.ATTR_ERROR_REGISTRO, Error.ALIAS_CORREO);
-                Redirect.irA(Shop.getApp()+"/registrarse.html", request, response);
+                error(Error.ALIAS_CORREO);
                 return;
             }
         }
+    }
+    
+    private void error(int err){
+    	try{
+	    	sesion.setAttribute(Sesion.ATTR_ERROR, err);                
+	        Sesion.setAttr(Sesion.ATTR_DATOS_FORM, DatosFormulario);
+	        Redirect.irA(Shop.getApp()+"/registrarse.html", request, response);
+    	}catch(Exception ex){
+    		Archivo.guardarCadena("Error comprobando registro: "+ex.getMessage());
+    	}
     }
     
     private int comprobarReg(String correo, String alias){

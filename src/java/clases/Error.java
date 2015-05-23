@@ -17,4 +17,5 @@ public class Error {
     public static final int CORREO = 0;
     
     public static final int PASSWORD_N_COINCIDEN = 4;
+    public static final int ALIAS_CORREO_N_EXISTE = 5;
 }

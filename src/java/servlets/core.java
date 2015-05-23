@@ -6,9 +6,12 @@
 package servlets;
 
 import clases.Redirect;
+import clases.Sesion;
 import clases.util.Archivo;
+
 import java.io.IOException;
 import java.io.PrintWriter;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -34,7 +37,8 @@ public class core extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         String userPath = request.getServletPath();
         String url;
-        Archivo.guardarCadena("Entrando.....:"+userPath);
+        Sesion.init(request);
+        //Archivo.guardarCadena("Entrando.....:"+userPath);
         
         switch (userPath) {
             case "/index.html":
@@ -51,6 +55,9 @@ public class core extends HttpServlet {
                 break;
             case "/debug.html":
                 url = "debug.jsp";
+                break;
+            case "/logout.html":
+                url = "inicio.jsp"; Sesion.cerrar();
                 break;
             default:
                 url = "error.jsp";
