@@ -17,6 +17,7 @@ hs_err_pid*
 
 #netbeans ignore personal stuff
 nbproject/
+build.xml
 
 ## generic files to ignore
 *~
@@ -24,3 +25,4 @@ nbproject/
 *.DS_Store
 *.swp
 *.out
+/build/
