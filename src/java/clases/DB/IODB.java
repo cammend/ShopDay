@@ -11,6 +11,7 @@ import clases.util.Md5;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 /**
@@ -27,11 +28,15 @@ public class IODB {
     private static String[] campo;
     
     //métodos específicos
-    public static boolean nuevoUsuario(String correo, String nombre, String alias, String pass){
-        String fecha = getFechaHoy();
+    public static boolean nuevoUsuario(String nombre, String alias, String pass, int edad){
         pass = Md5.encriptar(pass);
-        Object[] obj = new Object[] {correo,nombre,alias,fecha,pass};
+        Object[] obj = new Object[] {alias,nombre,pass,edad};
         return insertarFila(TablasDB.USUARIOS, obj);
+    }
+    public static boolean nuevaLista(int id, String descripcion, String fecha, double presupuesto, String aliasUsuario){
+        setearDatosTabla(TablasDB.LISTAS);;
+        Object[] obj = new Object[] {id, descripcion, fecha, presupuesto, false, aliasUsuario};
+        return insertarFila(TablasDB.LISTAS, campo, obj);
     }
     public static boolean existeCorreo(String correo){
     	setearDatosTabla(TablasDB.USUARIOS);
@@ -39,7 +44,21 @@ public class IODB {
     }
     public static boolean existeAlias(String alias){
     	setearDatosTabla(TablasDB.USUARIOS);
-    	return existe(tabla,campo[3], alias);
+    	return existe(tabla,campo[0], alias);
+    }
+    public static boolean existeIdLista(int id){
+        setearDatosTabla(TablasDB.LISTAS);
+        rs = traerConsulta("select "+campo[0]+" from "+tabla+" where "+campo[0]+" = "+id);
+        try{
+            if( rs!=null ){
+                if( rs.next() ){
+                    return true;
+                }
+            }
+        }catch(Exception ex){
+            Archivo.guardarCadena("Error existe Id Lista");
+        }
+        return false;
     }
     public static boolean nuevoAbarrote(String nombre){
     	Object[] obj = new Object[] {nombre};
@@ -63,14 +82,14 @@ public class IODB {
     public static String getPasswordUsuario(String user){
     	setearDatosTabla(TablasDB.USUARIOS);
     	String pass;
-    	rs = getCampoFila(campo[5],campo[1],user);//consiguiendo el pass con el correo
-    	pass = getStringFromRS(rs,campo[5]);
+    	rs = getCampoFila(campo[2],campo[1],user);//consiguiendo el pass con el correo
+    	pass = getStringFromRS(rs,campo[2]);
     	if(pass!=null){
     		cerrar();
     		return pass;//pass obtenida con el correo
     	}
-    	rs = getCampoFila(campo[5],campo[3],user);//consiguiendo el pass con el alias
-    	pass = getStringFromRS(rs,campo[5]);
+    	rs = getCampoFila(campo[2],campo[0],user);//consiguiendo el pass con el alias
+    	pass = getStringFromRS(rs,campo[2]);
     	if(pass!=null){
     		cerrar();
     		return pass;//pass obtenida con el alias
@@ -82,7 +101,59 @@ public class IODB {
     	rs = getFila(tabla,campo[0],codigo);
     	return generarFilaObjetos(rs,campo);
     }
-    
+    public static Integer[] getColumnaIdMedida(){
+        setearDatosTabla(TablasDB.MEDIDA);
+        Object[] obj = getColumnaTabla(tabla,campo[0]);
+        if( obj != null){
+            Integer id[] = new Integer[obj.length];
+            for(int i=0; i<obj.length; i++){
+                id[i] = Integer.valueOf(String.valueOf(obj[i]));
+            }
+            return id;
+        }
+        return null;
+    }
+    public static Integer[] getColumnaIdCategoria(){
+        setearDatosTabla(TablasDB.CATEGORIA);
+        Object[] obj = getColumnaTabla(tabla,campo[0]);
+        if( obj != null){
+            Integer id[] = new Integer[obj.length];
+            for(int i=0; i<obj.length; i++){
+                id[i] = Integer.valueOf(String.valueOf(obj[i]));
+            }
+            return id;
+        }
+        return null;
+    }
+    public static String[] getColumnaDescripcionMedida(){
+        setearDatosTabla(TablasDB.MEDIDA);
+        Object[] obj = getColumnaTabla(tabla,campo[1]);
+        if( obj != null){
+            String descripcion[] = new String[obj.length];
+            for(int i=0; i<obj.length; i++){
+                descripcion[i] = String.valueOf(obj[i]);
+            }
+            return descripcion;
+        }
+        return null;
+    }
+    public static String[] getColumnaDescripcionCategoria(){
+        setearDatosTabla(TablasDB.CATEGORIA);
+        Object[] obj = getColumnaTabla(tabla,campo[1]);
+        if( obj != null){
+            String descripcion[] = new String[obj.length];
+            for(int i=0; i<obj.length; i++){
+                descripcion[i] = String.valueOf(obj[i]);
+            }
+            return descripcion;
+        }
+        return null;
+    }
+    public static Object[] getDatosLista(int codigo){
+        setearDatosTabla(TablasDB.LISTAS);
+        rs = getFila(tabla,campo[0],codigo);
+        return generarFilaObjetos(rs,campo);
+    }
     //métodos genéricos
     public static Object[] generarFilaObjetos(ResultSet rs, String campo[]){
     	Object obj[] = new Object[campo.length];
@@ -194,23 +265,68 @@ public class IODB {
     	String c = "Update "+tabla+" set "+act+" where ("+fila[0]+"='"+fila[1]+"')";
     	return hacerConsulta(c);
     }
-    public static boolean insertarFila(String tabla, String campos[], Object valores[]){
-    	if(campos.length != valores.length){
-    		Archivo.guardarCadena("Error al insertar fila: el número de campos no coincide con el número de valores.");
-    		return false;
-    	}else if(campos.length == 0){
-    		Archivo.guardarCadena("Error al insertar fila: no hay algo que insertar.");
-    		return false;
+    public static boolean insertarFila(String tabla, String campo[], Object valores[]){
+    	if(campo.length == 0){
+            Archivo.guardarCadena("Error al insertar fila: no hay algo que insertar.");
+            return false;
     	}
-    	String campo = armarCampos(campos);
+    	String campos = armarCampos(campo);
     	String valor = armarValores(valores);
-    	String consulta ="insert into "+tabla+campo+"values"+valor;
+    	String consulta ="insert into "+tabla+campos+"values"+valor;
         return hacerConsulta(consulta);
     }
     public static boolean insertarFila(String tabla, Object valores[]){
     	return insertarFila(tabla, TablasDB.getCamposTabla(tabla),valores);
     }
-    
+    public static Object[] nextFilaTabla(ResultSet rs, String campo[]){
+        Object[] obj = new Object[campo.length];
+        try{
+            if( rs!=null ){
+                while( rs.next() ){
+                    for(int i=0; i<campo.length; i++){
+                        obj[i] = rs.getObject(campo[i]);
+                    }
+                }
+                return obj;
+            }
+        }catch(Exception ex){
+            Archivo.guardarCadena("Error armando Array de tabla. "+ex.getMessage());
+        }
+        return null;
+    }
+    public static int getCantidadFilasTabla(String tabla){
+        rs = traerConsulta("select COUNT(*) from "+tabla);
+        try{
+            if( rs!= null ){
+                if( rs.next() ){
+                    return rs.getInt("COUNT(*)");
+                }
+            }
+        }catch(Exception ex){
+            Archivo.guardarCadena("Error en consulta COUNT(): "+ex.getMessage());
+        }
+        return -1;
+    }
+    public static Object[] getColumnaTabla(String tabla, String columna){
+        int num = getCantidadFilasTabla(tabla);
+        if( num > 0){
+            Object[] obj = new Object[num];
+            rs = traerConsulta("select "+columna+" from "+tabla);
+            try{
+                if( rs!=null ){
+                    for(int i=0; rs.next(); i++){
+                        obj[i] = rs.getObject(columna);
+                    }
+                    cerrar();
+                    return obj;
+                }
+            }catch(Exception ex){
+                Archivo.guardarCadena("Error en getColumnaTabla");
+            }
+        }
+        return null;
+    }
+
     //métodos útiles
     private static String getFechaHoy(){
         Calendar fecha = Calendar.getInstance();
@@ -234,15 +350,36 @@ public class IODB {
     	//se supone que el array valores tiene al menos un valor
     	//se va a comprobar valores de cadenas o números
     	String valor = " (";
-    	for(int i=0; i<valores.length; i++){
-    		if(valores[i] instanceof String){
-    			valor += "'"+valores[i]+"',";
-    		}else if(valores[i] instanceof Integer){
-    			valor += valores[i]+",";
-    		}
-    	}
+        for (Object valore : valores) {
+            if (valore instanceof String) {
+                valor += "'" + valore + "',";
+            } else if (valore instanceof Integer) {
+                valor += valore + ",";
+            } else if (valore instanceof Double) {
+                valor += valore + ",";
+            }else{
+                valor += valore + ",";
+            }
+        }
     	valor += "REPLACE";
     	valor = valor.replace(",REPLACE", ")");
+    	return valor;
+    }
+    public static String armarArray(Object valores[], String init, String fin){
+        String valor = init;
+        for (Object valore : valores) {
+            if (valore instanceof String) {
+                valor += "'" + valore + "',";
+            } else if (valore instanceof Integer) {
+                valor += valore + ",";
+            } else if (valore instanceof Double) {
+                valor += valore + ",";
+            }else{
+                valor += valore + ",";
+            }
+        }
+    	valor += "REPLACE";
+    	valor = valor.replace(",REPLACE", fin);
     	return valor;
     }
     public static void setearDatosTabla(String t){

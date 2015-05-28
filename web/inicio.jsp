@@ -17,20 +17,41 @@ if( !Sesion.haySesion() ){
 }else{
 	alias = Sesion.getAliasUsuario();
 	if(alias!=null){
-		titulo += " - "+alias;
+            titulo += " - "+alias;
 	}
 }
 %>
 <!DOCTYPE html>
-<html>
+<html lang="es">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <title><% out.print(titulo);%></title>
+    <link rel="stylesheet" href="css/base-l.css">
   </head>
+  
   <body>
-    <%
-    %>
-    <h1>Hello World!</h1>
-    <a href="logout.html">Salir</a>
+    <div id="cuerpo">
+        <div id="logo">
+          <h1><a href="">Shop Day</a></h1>
+        </div>
+        <div id="links">
+
+        </div>
+
+        <div id="botones">
+            <a href="nueva-lista.html">Preparar Lista de Abarrotes</a>
+            <p>o</p>
+            <a href="comprar-lista.html">Comprar mis Abarrotes</a>
+        </div>
+          <div class="botones">
+              <a href="logout.html">Salir</a>
+          </div>
+
+
+        <div id="pie">
+          <p>Shoping Day! - cammend</p>
+        </div>
+    </div>
   </body>
 </html>

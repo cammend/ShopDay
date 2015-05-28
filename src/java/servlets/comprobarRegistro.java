@@ -51,21 +51,21 @@ public class comprobarRegistro extends HttpServlet {
         
         response.setContentType("text/html;charset=UTF-8");
         //comprobamos las variables del formulario
-        String correo = request.getParameter("correo");
         String nombre  = request.getParameter("nombre");
         String alias  = request.getParameter("alias");
+        int edad = Integer.parseInt(request.getParameter("edad"));
         String pass   = request.getParameter("pass");
         String pass2  = request.getParameter("pass2");
         
-        if(correo == null){ //si los parametros estan en null
+        if(nombre == null){ //si los parametros estan en null
             Redirect.irA(Shop.getApp()+"/registrarse.html", request, response);
             return;
-        }else if(correo.equals("") || nombre.equals("") || alias.equals("") || pass.equals("") || pass2.equals("")){
+        }else if(nombre.equals("") || alias.equals("") || pass.equals("") || pass2.equals("")){
             //si vienen vacios volvemos a la pagina de registro
             Redirect.irA(Shop.getApp()+"/registrarse.html", request, response);
             return;
         }else{
-        	DatosFormulario = new String[] {correo,nombre,alias};
+        	DatosFormulario = new String[] {nombre,alias,String.valueOf(edad)};
             //si todos los campos viene llenos comprobamos si las contraseñas coinciden
             if(!pass.equals(pass2)){
                 sesion.setAttribute(Sesion.ATTR_ERROR , Error.PASSWORD_N_COINCIDEN);
@@ -74,17 +74,17 @@ public class comprobarRegistro extends HttpServlet {
             }
         }
         //el metodo comprobarReg revisa que los datos no esten repetido o que sean validos
-        int cod = comprobarReg(correo, alias);
+        int cod = comprobarReg(alias);
         switch (cod){
             case Error.OK :{
                 try{  //ingresamos los datos a la DB
-                    if( IODB.nuevoUsuario(correo, nombre, alias, pass) ){
+                    if( IODB.nuevoUsuario(nombre, alias, pass, edad) ){
                     	int codigo = IODB.getCodUsuario(alias);
                     	if(codigo == -1){//quiere decir que hay error
                     		Archivo.guardarCadena("Error obteniendo codigo de usuario");
                     	}
                         //Agregamos una variable de sesión
-                    	Sesion.setAttr(Sesion.ATTR_CODIGO_USUARIO, codigo);
+                    	Sesion.setAttr(Sesion.ATTR_ALIAS_USUARIO, codigo);
                     	//si ingresó el usuario redireccionamos a la pagina principal
                     	Redirect.redireccionar("/inicio.html", request, response);
                     }else{
@@ -120,14 +120,9 @@ public class comprobarRegistro extends HttpServlet {
     	}
     }
     
-    private int comprobarReg(String correo, String alias){
-        boolean c = IODB.existeCorreo(correo);
+    private int comprobarReg(String alias){
         boolean a = IODB.existeAlias(alias);
-        if( c && a ){
-            return Error.ALIAS_CORREO;
-        }else if( c ){
-            return Error.CORREO;
-        }else if( a ){
+        if( a ){
             return Error.ALIAS;
         }else{
             return Error.OK;

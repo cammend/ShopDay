@@ -32,7 +32,7 @@ public class Shop {
         return "/ShopDay";
     }
     public static String getHostDB(){
-        return "jdbc:mysql://127.0.0.1/ShopDay";
+        return "jdbc:mysql://127.0.0.1/shopDayDB";
     }
     public static String userDB(){
         return "root";
@@ -48,7 +48,7 @@ public class Shop {
         return null;
     }
     public static String getDB(){
-        return "shopday";
+        return "shopDayDB";
     }
     public static String getVersionKernel(){
         return null;

@@ -58,15 +58,10 @@ public class comprobarLogin extends HttpServlet {
         	if(passDB!=null){
         		pass = Md5.encriptar(pass);
         		if(passDB.equals(pass)){
-        			int codigo = IODB.getCodUsuario(nombre);
-                	if(codigo == -1){//quiere decir que hay error
-                		Archivo.guardarCadena("Error obteniendo codigo de usuario");
-                	}else{
 	                    //Agregamos una variable de sesión
-	                	Sesion.setAttr(Sesion.ATTR_CODIGO_USUARIO, codigo);
-	                	//si ingresó el usuario redireccionamos a la pagina principal
-	                	Redirect.irA("inicio.html", request, response);
-                	}
+                            Sesion.setAttr(Sesion.ATTR_ALIAS_USUARIO, nombre);
+                            //si ingresó el usuario redireccionamos a la pagina principal
+                            Redirect.irA("inicio.html", request, response);
         		}else{
         			Sesion.setError(Error.PASSWORD_N_COINCIDEN);
         			Redirect.irA("login.html", request, response);

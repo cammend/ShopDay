@@ -5,13 +5,12 @@
  */
 package servlets;
 
+import clases.DB.IODB;
 import clases.Redirect;
 import clases.Sesion;
-import clases.util.Archivo;
-
+import clases.util.Shop;
 import java.io.IOException;
 import java.io.PrintWriter;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -21,7 +20,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author cammend
  */
-public class core extends HttpServlet {
+public class insertarLista extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -32,48 +31,55 @@ public class core extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
+    String descripcion;
+    String fecha;
+    double presupuesto = 0;
+    HttpServletRequest request;
+    
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        String userPath = request.getServletPath();
-        String url;
+        this.request = request;
         Sesion.init(request);
-        //Archivo.guardarCadena("Entrando.....:"+userPath);
         
-        switch (userPath) {
-            case "/index.html":
-                url = "index.jsp";
-                break;
-            case "/inicio.html":
-                url = "inicio.jsp";
-                break;
-            case "/login.html":
-                url = "login.jsp";
-                break;
-            case "/registrarse.html":
-                url = "registrarse.jsp";
-                break;
-            case "/debug.html":
-                url = "debug.jsp";
-                break;
-            case "/logout.html":
-                url = "inicio.jsp"; Sesion.cerrar();
-                break;
-            case "/nueva-lista.html":
-                url = "preparaLista.jsp";
-                break;
-            case "/comprar-lista.html":
-                url = "inicio.jsp";
-                break;
-            case "/preparar-lista.html":
-                url = "preparaListaAbarrotes.jsp";
-                break;
-            default:
-                url = "error.jsp";
-                break;
+        obtenerDatosFormulario();
+        if( hayValoresNulos() ){
+            Redirect.irA("nueva-lista.html", request, response);
+        }else{
+            while(true){
+                int id_lista = random(1,10000000);
+                if( !IODB.existeIdLista(id_lista) ){
+                    Sesion.setAttr("id_lista", id_lista);
+                    IODB.nuevaLista(id_lista, descripcion, fecha, presupuesto, Sesion.getAliasUsuario());
+                    Redirect.irA("preparar-lista.html", request, response);
+                    break;
+                }
+            }
         }
-        
-        Redirect.redireccionar(url, request, response);
+    }
+    
+    private int random(int a, int b){
+        return Math.round((float)(Math.random()*b+a));
+    }
+    
+    private void obtenerDatosFormulario(){
+    	descripcion = request.getParameter("descripcion");
+        fecha  = request.getParameter("fecha");
+        Object piv = request.getParameter("presupuesto");
+        if( piv!=null ){
+            String pivote = String.valueOf(piv);
+            if( !pivote.equals("") ){
+                presupuesto = Double.parseDouble(pivote);
+            }
+        }
+    }
+    private boolean hayValoresNulos(){
+    	if(descripcion == null){ //si los parametros estan en null            
+            return true;
+        }else if(descripcion.equals("") || fecha.equals("") || presupuesto==0.0 ){
+        	return true;
+        }
+    	return false;
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

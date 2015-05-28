@@ -47,6 +47,27 @@ body{
         text-decoration: none;
 }
 
+.botones{
+	background: rgba(200,100,100,0.5);
+	display: block;
+	width: 100%;
+	padding: 3px 0px 3px 0px;
+	margin-top: 20px;
+	border-radius: 5px;
+	text-align: center;
+}
+
+.botones a{
+	background: rgba(50,50,50,0.5);
+	border-radius: 5px;
+	box-shadow: 2px 2px 5px black;
+	color: white;
+	display: block;
+	margin: 10px;
+	padding: 5px;
+        text-decoration: none;
+}
+
 #pie{
     background: rgba(50,50,50,0.7);
     display: block;

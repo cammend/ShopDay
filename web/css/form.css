@@ -1,0 +1,46 @@
+*{
+	margin: 0;
+	padding: 0;
+	font-family: Helvetica, Arial;
+        color: rgb(30,30,50);
+}
+
+.formulario{
+	background: rgba(255,255,255,0.5);
+	float: right;
+	display: block;
+	margin: 20px auto;
+	padding: 5px auto;
+	width: 100%;
+	text-align: center;
+	border-radius: 5px;
+}
+.formulario form input{
+	background: rgba(255,255,255,0.5);
+	border-radius: 2px;
+	display: inline-block;
+	margin: 10px auto;
+	height: 30px;
+	width: 45%;
+}
+.formulario form label{
+	margin: 10px auto;
+        display: inline-block;
+        text-align: left;
+        width: 40%;
+}
+
+@media screen and (max-width: 500px){
+    .formulario{
+        text-align: center;
+    }
+    .formulario form input{
+        display: block;
+        width: 95%;
+    }
+    .formulario form label{
+        display: block;
+        width: 95%;
+        margin: 0 auto;
+    }
+}

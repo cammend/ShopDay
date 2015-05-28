@@ -5,13 +5,11 @@
  */
 package servlets;
 
+import clases.DB.IODB;
 import clases.Redirect;
 import clases.Sesion;
-import clases.util.Archivo;
-
 import java.io.IOException;
 import java.io.PrintWriter;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -21,7 +19,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author cammend
  */
-public class core extends HttpServlet {
+public class guardarListaPreparada extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -35,45 +33,20 @@ public class core extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        String userPath = request.getServletPath();
-        String url;
         Sesion.init(request);
-        //Archivo.guardarCadena("Entrando.....:"+userPath);
-        
-        switch (userPath) {
-            case "/index.html":
-                url = "index.jsp";
-                break;
-            case "/inicio.html":
-                url = "inicio.jsp";
-                break;
-            case "/login.html":
-                url = "login.jsp";
-                break;
-            case "/registrarse.html":
-                url = "registrarse.jsp";
-                break;
-            case "/debug.html":
-                url = "debug.jsp";
-                break;
-            case "/logout.html":
-                url = "inicio.jsp"; Sesion.cerrar();
-                break;
-            case "/nueva-lista.html":
-                url = "preparaLista.jsp";
-                break;
-            case "/comprar-lista.html":
-                url = "inicio.jsp";
-                break;
-            case "/preparar-lista.html":
-                url = "preparaListaAbarrotes.jsp";
-                break;
-            default:
-                url = "error.jsp";
-                break;
+        String fila = request.getParameter("filas");//este atributo me indica el numero de filas de productos
+        int codigo = Integer.parseInt(Sesion.getAttr("id_lista"));
+        Object datosLista[] = IODB.getDatosLista(codigo);
+        if( fila!=null ){
+            int index = Integer.parseInt(fila);
+            String campos[][] = new String [4][index];
+            for(int i=0; i<index; i++){
+                campos[i][0] = request.getParameter("producto"+i);
+                campos[i][1] = request.getParameter("categoria"+i);
+                campos[i][2] = request.getParameter("medida"+i);
+                campos[i][3] = request.getParameter("cantidad"+i);
+            }
         }
-        
-        Redirect.redireccionar(url, request, response);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

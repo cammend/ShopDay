@@ -18,17 +18,17 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class Sesion {
     public static final String ATTR_ERROR= "Error";
-    public static final String ATTR_CODIGO_USUARIO= "CodigoUsuario";
+    public static final String ATTR_ALIAS_USUARIO= "AliasUsuario";
     public static final String ATTR_DATOS_FORM= "DatosForm";
-    private static HttpServletRequest request;
+    private static HttpServletRequest request = null;
     
     public static void init(HttpServletRequest rq){
-    	request = rq;
+        request = rq;   	
     }
     
     public static void cerrar(){
     	if( haySesion() ){
-    		request.getSession().removeAttribute(ATTR_CODIGO_USUARIO);
+    		request.getSession().removeAttribute(ATTR_ALIAS_USUARIO);
     	}
     }
     
@@ -109,7 +109,7 @@ public class Sesion {
     	return hayAttr(ATTR_ERROR);
     }
     public static boolean haySesion(){
-    	return hayAttr(ATTR_CODIGO_USUARIO);
+    	return hayAttr(ATTR_ALIAS_USUARIO);
     }
     
     public static boolean hayDatosForm(){
@@ -118,24 +118,19 @@ public class Sesion {
     
     private static boolean hayAttr(String attr){
     	if(request.getSession().getAttribute(attr)!=null){
-    		return true;
+            return true;
     	}
     	return false;
     }
-    
-    public static int getCodigoUsuario(){
-    	if( haySesion() ){
-    		return Integer.parseInt(String.valueOf(request.getSession().getAttribute(ATTR_CODIGO_USUARIO)));
-    	}
-    	return -1;
+    public static String getId(){
+        return request.getSession().getId();
     }
     
     public static String getAliasUsuario(){
-    	Object datos[];
-    	datos = IODB.getDatosUsuario(getCodigoUsuario());
-    	if(datos!=null){
-    		return String.valueOf(datos[3]);
-    	}
+    	if( haySesion() ){
+            String alias = String.valueOf(request.getSession().getAttribute(ATTR_ALIAS_USUARIO));
+            return alias;
+        }
     	return null;
     }
 }

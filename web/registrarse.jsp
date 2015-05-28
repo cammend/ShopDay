@@ -26,19 +26,14 @@ int codError = Sesion.getError();
 if( Sesion.hayDatosForm() ){
 	String datosForm[] = Sesion.getArrayAttr(Sesion.ATTR_DATOS_FORM);
 	if(datosForm.length>0){
-		out.println("document.getElementById('correo').value='"+datosForm[0]+"'");
-		out.println("document.getElementById('nombre').value='"+datosForm[1]+"'");
-		out.println("document.getElementById('alias').value='"+datosForm[2]+"'");
-		if(codError == Error.CORREO){
-		    out.println("document.getElementById('correo').value=''");
-		    out.println("document.getElementById('correo').focus();");
+                out.println("document.getElementById('nombre').value='"+datosForm[0]+"'");
+		out.println("document.getElementById('alias').value='"+datosForm[1]+"'");
+		out.println("document.getElementById('edad').value='"+datosForm[2]+"'");
+                if(codError == Error.CORREO){
 		}else if(codError == Error.ALIAS){
 		    out.println("document.getElementById('alias').value=''");
 		    out.println("document.getElementById('alias').focus();");
 		}else if(codError == Error.ALIAS_CORREO){
-		    out.println("document.getElementById('correo').value=''");
-		    out.println("document.getElementById('alias').value=''");
-		    out.println("document.getElementById('correo').focus();");
 		}
 	}
 }
@@ -93,12 +88,12 @@ if( Sesion.hayDatosForm() ){
     <div id="div-inicia-sesion">
         <p><strong>Nuevo Usuario</strong></p>
         <form name="sesion" method="post" action="comprobar-registro">
-            <label>Correo Electrónico</label>
-            <input type="text" name="correo" id="correo" placeholder="Escriba su dirección de correo electrónico" required>
             <label>Nombre Completo</label>
             <input type="text" name="nombre" id="nombre" placeholder="Escriba su nombre completo" required>
             <label>Nombre Usuario</label>
             <input type="text" name="alias" id="alias" placeholder="Escriba un alias o nickname" required>
+            <label>Edad</label>
+            <input type="text" name="edad" id="edad" placeholder="Escriba su edad" required>
             <label>Contraseña</label>
             <input type="password" name="pass" id="pass" placeholder="Escriba su contraseña" required>
             <label>Confirmar Contraseña</label>
