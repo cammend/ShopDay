@@ -79,12 +79,12 @@ public class comprobarRegistro extends HttpServlet {
             case Error.OK :{
                 try{  //ingresamos los datos a la DB
                     if( IODB.nuevoUsuario(nombre, alias, pass, edad) ){
-                    	int codigo = IODB.getCodUsuario(alias);
-                    	if(codigo == -1){//quiere decir que hay error
-                    		Archivo.guardarCadena("Error obteniendo codigo de usuario");
-                    	}
+                    	//int codigo = IODB.getCodUsuario(alias);
+                    	//if(codigo == -1){//quiere decir que hay error
+                    	//	Archivo.guardarCadena("Error obteniendo codigo de usuario");
+                    	//}
                         //Agregamos una variable de sesión
-                    	Sesion.setAttr(Sesion.ATTR_ALIAS_USUARIO, codigo);
+                    	Sesion.setAttr(Sesion.ATTR_ALIAS_USUARIO, alias);
                     	//si ingresó el usuario redireccionamos a la pagina principal
                     	Redirect.redireccionar("/inicio.html", request, response);
                     }else{

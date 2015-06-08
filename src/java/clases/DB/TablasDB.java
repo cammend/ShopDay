@@ -5,8 +5,8 @@ public class TablasDB {
 	public static final String USUARIOS = "usuario";
 	private static final String[] USUARIOS_CAMPOS = {"idusuario","nombrecompleto","password","Edad"};
 	//tabla de abarrotes
-	public static final String ABARROTES = "abarrotes";
-	private static final String[] ABARROTES_CAMPOS = {"id","descripcionabarrote","marca","Precio","cantidadplan","idcategoria","idunidadmedida","idusuario"};
+	public static final String ABARROTES = "abarrote";
+	private static final String[] ABARROTES_CAMPOS = {"idabarrote","descripcionabarrote","marca","Precio","cantidadplan","idcategoria","idunidadmedida","idusuario"};
 	//tabla de listas de usario
 	public static final String LISTAS = "lista";
 	private static final String[] LISTAS_CAMPOS = {"idlista","descripcionlista","fecha","edad","estado","idusuario"};

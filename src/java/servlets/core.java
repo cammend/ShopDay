@@ -41,7 +41,7 @@ public class core extends HttpServlet {
         //Archivo.guardarCadena("Entrando.....:"+userPath);
         
         switch (userPath) {
-            case "/index.html":
+            case "/index":
                 url = "index.jsp";
                 break;
             case "/inicio.html":

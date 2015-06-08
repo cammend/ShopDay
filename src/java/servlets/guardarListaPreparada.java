@@ -8,6 +8,7 @@ package servlets;
 import clases.DB.IODB;
 import clases.Redirect;
 import clases.Sesion;
+import clases.util.Archivo;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
@@ -34,17 +35,35 @@ public class guardarListaPreparada extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         Sesion.init(request);
-        String fila = request.getParameter("filas");//este atributo me indica el numero de filas de productos
+        String fila = request.getParameter("num-filas");//este atributo me indica el numero de filas de productos
         int codigo = Integer.parseInt(Sesion.getAttr("id_lista"));
+        String alias = Sesion.getAliasUsuario();
         Object datosLista[] = IODB.getDatosLista(codigo);
-        if( fila!=null ){
+        String producto, marca;
+        double precio;
+        int cantidad, categoria, medida;        
+        if( fila!=null && alias!=null ){
             int index = Integer.parseInt(fila);
-            String campos[][] = new String [4][index];
             for(int i=0; i<index; i++){
-                campos[i][0] = request.getParameter("producto"+i);
-                campos[i][1] = request.getParameter("categoria"+i);
-                campos[i][2] = request.getParameter("medida"+i);
-                campos[i][3] = request.getParameter("cantidad"+i);
+                producto = request.getParameter("producto"+i);
+                marca = request.getParameter("marca"+i);
+                if(producto!=null){
+                    precio = Double.parseDouble(request.getParameter("precio"+i));
+                    cantidad = Integer.parseInt(request.getParameter("cantidad"+i));
+                    categoria = Integer.parseInt(request.getParameter("categoria"+i));
+                    medida = Integer.parseInt(request.getParameter("medida"+i));
+                    if( !IODB.existeAbarrote(producto) ){
+                        IODB.nuevoAbarrote(producto, marca, precio, cantidad, categoria, medida, alias);
+                        int idA = IODB.getIdAbarrote(producto);
+                        IODB.nuevoDetalleLista(codigo, idA, cantidad, 0, false);
+                    }else{
+                        Archivo.guardarCadena("Producto Existe!");
+                        int idA = IODB.getIdAbarrote(producto);
+                        IODB.nuevoDetalleLista(codigo, idA, cantidad, 0, false);
+                    }
+                }else{
+                    Archivo.guardarCadena("Producto nulo!");
+                }
             }
         }
     }

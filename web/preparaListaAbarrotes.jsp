@@ -15,33 +15,120 @@
 <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
 <script type="text/javascript" src="js/jquery.js"></script>
 <script type="text/javascript" src="js/dinamico.js"></script>
-<link rel="stylesheet" type="text/css" href="css/base-l.css">
 <style>
-table{
-	margin-top: 15px;
-	width: 100%;
-}
-.clase-producto{
-    width: 80%;
-}
-#opciones{
-    width: 100%;
-    margin-top: 15px;
-    text-align: center;
-}
-#add{
-    padding: 0px 5px;
-    background: rgb(100,100,100);
-}
-#cuerpo a{
-    padding: 0px 5px;
-    margin: 15px;
-    color: white;
-    text-decoration: none;
-    background: rgb(100,100,100);
-}#filas{
-    display: none;
-}
+	*{
+		margin: 0;
+		padding: 0;
+	}
+	a{
+		background: gray;
+		color: white;
+		padding: 0 5px;
+		text-decoration: none;
+	}
+        body{
+                background: url(img/Aquarius.png);
+        }
+	input{
+		width: 148px;
+	}
+	select{
+		width: 174px;
+	}
+	.principal{
+		background: blue;
+		margin: 15px 0;
+		margin-left: auto;
+		margin-right: auto;
+		padding: 1px;
+		text-align: center;
+		width: 95%;
+	}
+	.cabecera{
+		display: none;
+	}
+        .clase-input{
+                width: 168px;
+        }
+	.numeros{
+		display: inline-block;
+		width: 100px;
+	}
+	.inputs{
+		display: block;
+	}
+	.filas{
+		display: block;
+		margin: 15px;
+		text-align: left;
+		width: 100%;
+	}
+	#datos-form{
+		background: white;
+		margin-left: auto;
+		margin-right: auto;
+		text-align: center;
+		width: 300px;
+	}
+	#num-filas{
+		display: none;
+	}
+
+	@media screen and (min-width: 500px) and (max-width: 800px){
+		input{
+			width: 240px;
+		}
+		select{
+			width: 266px;
+		}
+                .clase-input{
+                        width: 260px;
+                }
+		.numeros{
+			width: 150px;
+		}
+		#datos-form{
+			width: 450px;
+		}
+	}
+
+	@media screen and (min-width: 800px){
+		input{
+			width: 126px;
+		}
+		section{
+			display: table;
+			table-layout: fixed;
+		}
+		select{
+			width: 110px;
+		}
+                .clase-input{
+                        width: 126px;
+                }
+		.filas{
+			display: table-row;
+		}
+		.cabecera{
+			display: table-row;
+		}
+		.cabecera h5{
+			display: table-cell;
+			padding: 5px;
+		}
+		.inputs{
+			display: table-cell;
+		}
+		.numeros{
+			display: none;
+		}
+		#agregar-hidden{
+			display: none;
+		}
+		#datos-form{
+			width: 750px;
+		}
+	}
 </style>
 <script>
 var descripcion = "descripcion";
@@ -100,32 +187,27 @@ $(document).ready(function (){
 </head>
 
 <body>
-<div id="cuerpo">
-
-	<div id="logo">
+    <header class="principal">
 		<h1>Preparar Lista de Abarrotes</h1>
-		<p id="subtitle">Preparados
-                
-		</p>
-	</div>
-	<div id="lista">
-	<form name="datos" method="post" action="guardar-lista-preparada">
-	<table border=1>
-            <input id="filas" name="filas" type="text" value="hola"/>
-		<tr>
-			<td>Producto <%out.print("<a id=\"add\" onclick=\"addProducto()\">+</a>");%></td>
-			<td>Categoría</td>
-			<td>Medida</td>
-			<td>Cantidad</td>
-		</tr>
-	</table>
-            <div id="opciones">   
-                <input type="submit" value="GUARDAR"/>                
+		<p id="subtitle">Preparados</p>
+    </header>
+    <section class="principal">
+	<form id="datos" name="datos" method="post" action="guardar-lista-preparada">
+            <input id="num-filas" name="num-filas" value=""/>
+            <div id="datos-form">
+                <a id="agregar-hidden" href="#" onclick="addProducto()">Agregar Nuevo Producto</a>
+                <div class="cabecera">
+                    <h5>Producto <a id="agregar" href="#" onclick="addProducto()"> + </a></h5>
+                    <h5>Marca</h5>
+                    <h5>Precio</h5>
+                    <h5>Cantidad</h5>
+                    <h5>Categoría</h5>
+                    <h5>Medida</h5>
+                </div>
             </div>
-           
+            <input type="submit" value="Guardar"/>
 	</form>
-	</div>
-		
-</div>
+    </section>
+
 </body>
 </html>

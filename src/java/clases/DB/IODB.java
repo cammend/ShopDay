@@ -38,6 +38,17 @@ public class IODB {
         Object[] obj = new Object[] {id, descripcion, fecha, presupuesto, false, aliasUsuario};
         return insertarFila(TablasDB.LISTAS, campo, obj);
     }
+    public static boolean nuevoAbarrote(String descripcion, String marca, double precio, int cantidad, int categoria, int medida, String usuario){
+        setearDatosTabla(TablasDB.ABARROTES);
+        String[] campos = new String[] {campo[1],campo[2],campo[3],campo[4],campo[5],campo[6],campo[7]};
+        Object[] obj = new Object[] {descripcion, marca, precio, cantidad, categoria, medida, usuario};
+        return insertarFila(tabla,campos,obj);
+    }
+    public static boolean nuevoDetalleLista(int idLista, int idAbarrote, int cantidadPlan, int cantidadCompra, boolean abastecido){
+        setearDatosTabla(TablasDB.DETALLE_LISTA);
+        Object[] obj = new Object[] {idLista,idAbarrote,cantidadPlan,cantidadCompra,abastecido};
+        return insertarFila(tabla,campo,obj);
+    }
     public static boolean existeCorreo(String correo){
     	setearDatosTabla(TablasDB.USUARIOS);
         return existe(tabla,campo[1], correo);
@@ -60,6 +71,10 @@ public class IODB {
         }
         return false;
     }
+    public static boolean existeAbarrote(String nombreAbarrote){
+        setearDatosTabla(TablasDB.ABARROTES);
+        return existe(tabla,campo[1],nombreAbarrote);
+    }
     public static boolean nuevoAbarrote(String nombre){
     	Object[] obj = new Object[] {nombre};
     	return insertarFila(TablasDB.ABARROTES, obj);
@@ -78,6 +93,12 @@ public class IODB {
     	}
     	rs = getCampoFila(campo[0],campo[3],alias);
     	return getNumeroFromRS(rs,campo[0]);
+    }
+    public static int getIdAbarrote(String nombre){
+        setearDatosTabla(TablasDB.ABARROTES);
+        ResultSet result = getCampoFila(campo[0],campo[1],nombre);
+        int id = getNumeroFromRS(result,campo[0]);
+        return id;
     }
     public static String getPasswordUsuario(String user){
     	setearDatosTabla(TablasDB.USUARIOS);
@@ -154,6 +175,7 @@ public class IODB {
         rs = getFila(tabla,campo[0],codigo);
         return generarFilaObjetos(rs,campo);
     }
+    
     //métodos genéricos
     public static Object[] generarFilaObjetos(ResultSet rs, String campo[]){
     	Object obj[] = new Object[campo.length];
