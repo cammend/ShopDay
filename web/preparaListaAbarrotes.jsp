@@ -14,6 +14,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
 <script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript" src="js/validacion.js"></script>
 <script type="text/javascript" src="js/dinamico.js"></script>
 <style>
 	*{
@@ -142,7 +143,7 @@ var medida = [];
 var medidaID = [];
 var medidaSize = 0;
 //var cantidad
-var cantidad = [1,2,3,4,5,6,7,8,9,10];
+var cantidad = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20];
 var cantidadSize = 10;
 
 var numFilas = 0;
