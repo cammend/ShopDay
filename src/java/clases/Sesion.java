@@ -125,7 +125,9 @@ public class Sesion {
     public static String getId(){
         return request.getSession().getId();
     }
-    
+    public static void eliminarAttr(String nombre){
+        request.getSession().removeAttribute(nombre);
+    }
     public static String getAliasUsuario(){
     	if( haySesion() ){
             String alias = String.valueOf(request.getSession().getAttribute(ATTR_ALIAS_USUARIO));

@@ -4,6 +4,8 @@
     Author     : cammend
 --%>
 
+<%@page import="clases.DB.TablasDB"%>
+<%@page import="java.sql.ResultSet"%>
 <%@page import="clases.Sesion"%>
 <%@page import="clases.DB.IODB"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -17,6 +19,15 @@
 <script type="text/javascript" src="js/validacion.js"></script>
 <script type="text/javascript" src="js/dinamico.js"></script>
 <style>
+    <%
+        Sesion.init(request);
+    
+        Object carga = Sesion.getAttr("CargarLista");
+        if( carga!=null ){
+            out.println("#cargar-fav{display:none}");
+        }
+    %>
+    
 	*{
 		margin: 0;
 		padding: 0;
@@ -28,6 +39,7 @@
 		text-decoration: none;
 	}
         body{
+                text-align: center;
                 background: url(img/Aquarius.png);
         }
 	input{
@@ -65,9 +77,10 @@
 		width: 100%;
 	}
 	#datos-form{
-		background: white;
+		background-color: #999;
 		margin-left: auto;
 		margin-right: auto;
+                margin-top: 5px;
 		text-align: center;
 		width: 300px;
 	}
@@ -144,11 +157,34 @@ var medidaID = [];
 var medidaSize = 0;
 //var cantidad
 var cantidad = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20];
-var cantidadSize = 10;
+var cantidadSize = 20;
 
 var numFilas = 0;
+var numInputs = 0;
 <%
     Sesion.init(request);
+    
+    Object cargar = Sesion.getAttr("CargarLista");
+    if( cargar!=null ){
+        Sesion.eliminarAttr("CargarLista");
+        ResultSet rs = IODB.getTabla("abarrote");
+        String[] campo = TablasDB.getCamposTabla("abarrote");
+        try{
+            out.println("function precargar(){");
+            while( rs.next() ){
+                String producto = rs.getString(campo[1]);
+                String marca = rs.getString(campo[2]);
+                String precio = String.valueOf(rs.getDouble(campo[3]));
+                String cantidad = String.valueOf(rs.getInt(campo[4]));
+                String categoria = String.valueOf(rs.getInt(campo[5]));
+                String medida = String.valueOf(rs.getInt(campo[6]));
+                out.println("addProducto('"+producto+"','"+marca+"','"+precio+"',"+cantidad+","+categoria+","+medida+");");
+            }
+            out.println("}");
+        }catch(Exception ex){
+            
+        }
+    }
     
     Object[] obj = IODB.getDatosLista(Integer.parseInt(String.valueOf(Sesion.getAttr("id_lista"))));
     if( obj!=null ){
@@ -175,13 +211,27 @@ var numFilas = 0;
         out.println("categoriaID = "+ids+";");
         out.println("categoriaSize = "+id.length);
     }
+    
+    
 %>
 
 var subtitulo = "Lista "+descripcion+" del "+fecha+"<a href=\"catalogo.jsp\">Lista Favorita</a>";
 
+function ocultarCargar(){
+    $('#cargar-fav').hide();
+}
+
+function mostrarCargar(){
+    if(numInputs===0){
+        $('#cargar-fav').show();
+        numFilas=0;
+    }
+}
+
 $(document).ready(function (){
     $('#subtitle').html(subtitulo);
-    addProducto();
+    mostrarCargar();
+    precargar();
 });
 
 </script>
@@ -192,13 +242,14 @@ $(document).ready(function (){
 		<h1>Preparar Lista de Abarrotes</h1>
 		<p id="subtitle">Preparados</p>
     </header>
-    <section class="principal">
+    <a id="cargar-fav" href="cargar-lista-favorita">Cargar con lista Favorita</a>
+    <section class="principal">        
 	<form id="datos" name="datos" method="post" action="guardar-lista-preparada">
             <input id="num-filas" name="num-filas" value=""/>
             <div id="datos-form">
-                <a id="agregar-hidden" href="#" onclick="addProducto()">Agregar Nuevo Producto</a>
+                <a id="agregar-hidden" href="#" onclick='addProducto("","","",0,0,0)'>Agregar Nuevo Producto</a>
                 <div class="cabecera">
-                    <h5>Producto <a id="agregar" href="#" onclick="addProducto()"> + </a></h5>
+                    <h5>Producto <a id="agregar" href="#" onclick='addProducto("","","",0,0,0)'> + </a></h5>
                     <h5>Marca</h5>
                     <h5>Precio</h5>
                     <h5>Cantidad</h5>

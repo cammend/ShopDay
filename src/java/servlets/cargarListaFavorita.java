@@ -5,13 +5,12 @@
  */
 package servlets;
 
-import clases.DB.IODB;
 import clases.Redirect;
 import clases.Sesion;
-import clases.util.Archivo;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -20,7 +19,8 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author cammend
  */
-public class guardarListaPreparada extends HttpServlet {
+@WebServlet(name = "cargarListaFavorita", urlPatterns = {"/cargar-lista-favorita"})
+public class cargarListaFavorita extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -35,39 +35,8 @@ public class guardarListaPreparada extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         Sesion.init(request);
-        String fila = request.getParameter("num-filas");//este atributo me indica el numero de filas de productos
-        int codigo = Integer.parseInt(Sesion.getAttr("id_lista"));
-        String alias = Sesion.getAliasUsuario();
-        Object datosLista[] = IODB.getDatosLista(codigo);
-        String producto, marca;
-        double precio;
-        int cantidad, categoria, medida;        
-        if( fila!=null && alias!=null ){
-            int index = Integer.parseInt(fila);
-            for(int i=0; i<index; i++){
-                producto = request.getParameter("producto"+i);
-                marca = request.getParameter("marca"+i);
-                if(producto!=null){
-                    precio = Double.parseDouble(request.getParameter("precio"+i));
-                    cantidad = Integer.parseInt(request.getParameter("cantidad"+i));
-                    categoria = Integer.parseInt(request.getParameter("categoria"+i));
-                    medida = Integer.parseInt(request.getParameter("medida"+i));
-                    if( !IODB.existeAbarrote(producto) ){
-                        IODB.nuevoAbarrote(producto, marca, precio, cantidad, categoria, medida, alias);
-                        int idA = IODB.getIdAbarrote(producto);
-                        IODB.nuevoDetalleLista(codigo, idA, cantidad, 0, false);
-                        Redirect.irA("inicio.html", request, response);
-                    }else{
-                        Archivo.guardarCadena("Producto Existe!");
-                        int idA = IODB.getIdAbarrote(producto);
-                        IODB.nuevoDetalleLista(codigo, idA, cantidad, 0, false);
-                        Redirect.irA("inicio.html", request, response);
-                    }
-                }else{
-                    Archivo.guardarCadena("Producto nulo!");
-                }
-            }
-        }
+        Sesion.setAttr("CargarLista", "CargarLista");
+        Redirect.irA("preparar-lista.html", request, response);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
