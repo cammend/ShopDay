@@ -21,6 +21,23 @@ if( !Sesion.haySesion() ){
         <title>Preparar Lista</title>
         <link rel="stylesheet" href="css/base.css">
         <link rel="stylesheet" href="css/form.css">
+        <link rel="stylesheet" href="css/calendar-blue.css">
+        <script type="text/javascript" src="js/validacion.js"></script>
+        <script type="text/javascript" src="js/calendar.js"></script>
+        <script type="text/javascript" src="js/calendar-es.js"></script>
+        <script type="text/javascript" src="js/calendar-setup.js"></script>
+
+<script type="text/javascript">
+window.onload = function() {
+  Calendar.setup({
+    inputField: "fecha",
+    ifFormat:   "%Y-%m-%d",
+    button:     "selector"
+  });
+}
+</script>
+
+
     </head>
     <body>
 <div id="cuerpo">
@@ -34,9 +51,10 @@ if( !Sesion.haySesion() ){
             <label>Descripción</label>
             <input type="text" name="descripcion" id="descripcion" placeholder="" required>
             <label>Fecha</label>
-            <input type="text" name="fecha" id="fecha" placeholder="" required>
+            <input type="text" name="fecha" id="fecha" placeholder="" readonly="readonly" required>
+            <img src="img/img.gif" id="selector" />
             <label>Presupuesto</label>
-            <input type="text" name="presupuesto" id="presupuesto" placeholder="" required>
+            <input type="text" name="presupuesto" id="presupuesto" placeholder="" onkeypress="return soloNumeros(event);" required>
             <input type="submit" value="Siguiente">
         </form>
     </div>

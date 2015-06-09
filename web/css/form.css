@@ -29,6 +29,9 @@
         text-align: left;
         width: 40%;
 }
+#fecha{
+	width: 39%;
+}
 
 @media screen and (max-width: 500px){
     .formulario{
@@ -42,5 +45,9 @@
         display: block;
         width: 95%;
         margin: 0 auto;
+    }
+    #fecha{
+			display: inline-block;
+			width: 87%;
     }
 }

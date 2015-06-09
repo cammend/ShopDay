@@ -26,3 +26,4 @@ build.xml
 *.swp
 *.out
 /build/
+/dist/
