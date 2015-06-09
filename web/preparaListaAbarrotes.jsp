@@ -177,7 +177,7 @@ var numFilas = 0;
     }
 %>
 
-var subtitulo = "Lista "+descripcion+" del "+fecha+"<a href=\"\">Lista Favorita</a>";
+var subtitulo = "Lista "+descripcion+" del "+fecha+"<a href=\"catalogo.jsp\">Lista Favorita</a>";
 
 $(document).ready(function (){
     $('#subtitle').html(subtitulo);
