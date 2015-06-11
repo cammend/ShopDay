@@ -91,6 +91,10 @@ if( !Sesion.haySesion() ){
                         <%
                          String id = request.getParameter("productoeli");
                         if(id!=null){
+                        Statement q6 = null;
+                        q6 = ConexionDB.getConnection().createStatement();
+                        q6.executeUpdate("DELETE FROM detallelista WHERE idabarrote="+id+"");   
+                         
                         Statement q5 = null;
                         q5 = ConexionDB.getConnection().createStatement();
                         q5.executeUpdate("DELETE FROM abarrote WHERE idabarrote="+id+"");

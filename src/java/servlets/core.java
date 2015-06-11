@@ -63,7 +63,7 @@ public class core extends HttpServlet {
                 url = "preparaLista.jsp";
                 break;
             case "/comprar-lista.html":
-                url = "inicio.jsp";
+                url = "Compras.jsp";
                 break;
             case "/preparar-lista.html":
                 url = "preparaListaAbarrotes.jsp";

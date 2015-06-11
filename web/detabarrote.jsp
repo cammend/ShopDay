@@ -62,14 +62,17 @@ if( !Sesion.haySesion() ){
     </head>
     <body>
     <div class="formulario" id="apDiv1">ABARROTE DETALLE</div>
-    <a href="catalogo.jsp"><img src ="img/regresar.png" align="left"></a>
-    <div class="formulario" id="apDiv2">
+    
+            
+             <div class="formulario" id="apDiv2">
        
-        <form action="detabarrote.jsp" method="post">    
+             <form action="detabarrote.jsp" method="post"> 
+
             <%
             int pagina = 0;
             int update = 0;
             int productoup = 0;
+            //String lista ="";
             if(request.getParameter("pagina")==null){
             pagina = 0;
             update = 0;
@@ -81,12 +84,21 @@ if( !Sesion.haySesion() ){
             if(Integer.parseInt(request.getParameter("update"))==45){
             update = Integer.parseInt(request.getParameter("update"));
             productoup = Integer.parseInt(request.getParameter("productoeli"));}
+            if(Integer.parseInt(request.getParameter("update"))==90){
+            update = Integer.parseInt(request.getParameter("update"));}
             }
             out.print("<input type=\"hidden\" name=\"pagina\" value="+pagina+">");
             out.print("<input type=\"hidden\" name=\"update\" value="+update+">");
             out.print("<input type=\"hidden\" name=\"productoeli\" value="+productoup+">");
             %>
-            
+             <%
+            if(pagina==1){
+            out.print("<a href=\"catalogo.jsp\"><img src =\"img/regresar.png\" align=\"left\"></a>");}
+            if(pagina==2){
+            out.print("<a href=\"Compras.jsp\"><img src =\"img/regresar.png\" align=\"left\"></a>");
+            }
+            %>
+              
             <%
             Statement q = null;
             ResultSet rs = null;
@@ -97,7 +109,7 @@ if( !Sesion.haySesion() ){
             String Unidad = null;
             String Categoria = null;
             q = ConexionDB.getConnection().createStatement();
-            rs = q.executeQuery("SELECT abarrote.idabarrote, abarrote.descripcionabarrote,abarrote.cantidadplan,abarrote.marca,abarrote.Precio,categoria.descripcion, unidadmedida.Descripcion FROM abarrote, categoria, unidadmedida WHERE idusuario='WIN' AND idabarrote="+productoup+" AND abarrote.idcategoria=categoria.idcategoria AND abarrote.idunidadmedida=unidadmedida.idunidadMedida ");
+            rs = q.executeQuery("SELECT abarrote.idabarrote, abarrote.descripcionabarrote,abarrote.cantidadplan,abarrote.marca,abarrote.Precio,categoria.descripcion, unidadmedida.Descripcion FROM abarrote, categoria, unidadmedida WHERE idusuario='"+Sesion.getAliasUsuario()+"' AND idabarrote="+productoup+" AND abarrote.idcategoria=categoria.idcategoria AND abarrote.idunidadmedida=unidadmedida.idunidadMedida ");
             while(rs.next())
             {
              Descripcion= rs.getString("abarrote.descripcionabarrote");
@@ -204,6 +216,12 @@ if( !Sesion.haySesion() ){
                     </select>
                     </br>
                     
+                    <%
+                        String lista = request.getParameter("lista");
+
+                        out.print("<input type=\"hidden\" name=\"lista\" value="+lista+">"); 
+                        %>
+                    
                     <input type="submit" name="enviar" value="ACEPTAR">   
       </form>
 
@@ -236,6 +254,33 @@ if( !Sesion.haySesion() ){
                         Statement q4 = null;
                         q4 = ConexionDB.getConnection().createStatement();
                         q4.executeUpdate("INSERT INTO abarrote(descripcionabarrote, marca, Precio, cantidadplan, idcategoria, idunidadmedida, idusuario) VALUES ('"+producto+"','"+marca+"',"+precio+","+cantidad+","+categoria+","+unidad+",'"+Sesion.getAliasUsuario()+"')");
+                        out.print("<h1>OPERACION EXITOSA</h1>");}
+                        }}
+                       
+                       if(update==90){ 
+                           
+                       
+                       if(producto=="" || marca=="" || precio=="" || producto==null){out.print("Llena los Campos para insertar un Producto");}
+                        else{
+                        if(pagina==2){
+                        
+                        Statement q4 = null;
+                        q4 = ConexionDB.getConnection().createStatement();
+                        q4.executeUpdate("INSERT INTO abarrote(descripcionabarrote, marca, Precio, cantidadplan, idcategoria, idunidadmedida, idusuario) VALUES ('"+producto+"','"+marca+"',"+precio+","+cantidad+","+categoria+","+unidad+",'"+Sesion.getAliasUsuario()+"')");
+                        Statement q5 = null;
+                        ResultSet rs4 = null;
+                        q5 = ConexionDB.getConnection().createStatement();
+                        rs4=q5.executeQuery("SELECT * FROM abarrote WHERE descripcionabarrote='"+producto+"' AND idunidadmedida="+unidad);
+                        String temp="";
+                        String temp2= "";
+                        while(rs4.next()){
+                        temp = rs4.getString("idabarrote");
+                        }
+                        
+                        Statement q6 = null;
+                        q6 = ConexionDB.getConnection().createStatement();
+                        
+                        q6.executeUpdate("INSERT INTO detallelista(idlista,idabarrote, cantidadplan, cantidadcompra, abastecido) VALUES ("+lista+","+temp+","+cantidad+",0,0)");
                         out.print("<h1>OPERACION EXITOSA</h1>");}
                         }}
                        
