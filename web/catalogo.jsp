@@ -133,8 +133,8 @@ if( !Sesion.haySesion() ){
         
 
         
-    
-                    
+   
+      <a href="preparar-lista.html"><img src ="img/regresar.png"></a>             
                     
         
                         

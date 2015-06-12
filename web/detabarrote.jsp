@@ -19,6 +19,18 @@ if( !Sesion.haySesion() ){
 <!DOCTYPE html>
 <html>
     <head>
+        <script>
+                function justNumbers(e)
+    {
+    var keynum = window.event ? window.event.keyCode : e.which;
+    if ((keynum==8) || (keynum==46))
+    return true;
+     
+    return /\d/.test(String.fromCharCode(keynum));
+    }
+
+
+        </script>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
         <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
         <title>JSP Page</title>
@@ -64,7 +76,7 @@ if( !Sesion.haySesion() ){
     <div class="formulario" id="apDiv1">ABARROTE DETALLE</div>
     
             
-             <div class="formulario" id="apDiv2">
+             <div  id="botones">
        
              <form action="detabarrote.jsp" method="post"> 
 
@@ -91,13 +103,7 @@ if( !Sesion.haySesion() ){
             out.print("<input type=\"hidden\" name=\"update\" value="+update+">");
             out.print("<input type=\"hidden\" name=\"productoeli\" value="+productoup+">");
             %>
-             <%
-            if(pagina==1){
-            out.print("<a href=\"catalogo.jsp\"><img src =\"img/regresar.png\" align=\"left\"></a>");}
-            if(pagina==2){
-            out.print("<a href=\"Compras.jsp\"><img src =\"img/regresar.png\" align=\"left\"></a>");
-            }
-            %>
+             
               
             <%
             Statement q = null;
@@ -143,9 +149,9 @@ if( !Sesion.haySesion() ){
              %>
             <label><h1>Precio</h1></label>
            <%if(update==45){
-             out.print("<input type=\"text\" name=\"precioin\" value="+Precio+"></br>");
+             out.print("<input type=\"text\" name=\"precioin\" value="+Precio+" onkeypress=\"return justNumbers(event);\"></br>");
            }else{
-                  out.print("<input type=\"text\" name=\"precioin\"></br>");   
+                  out.print("<input type=\"text\" name=\"precioin\" onkeypress=\"return justNumbers(event);\"></br>");   
                      }
 
 %>
@@ -224,6 +230,7 @@ if( !Sesion.haySesion() ){
                     
                     <input type="submit" name="enviar" value="ACEPTAR">   
       </form>
+            
 
                     
                     <% 
@@ -295,6 +302,18 @@ if( !Sesion.haySesion() ){
                         
                     
                         %>    
+                        
+                        <%
+            if(pagina==1){
+            out.print("<a href=\"catalogo.jsp\"><img src =\"img/regresar.png\"></a>");}
+            if(pagina==2){
+            out.print("<form action=\"Compras.jsp\" method=\"post\"> ");
+            out.print("<input type=\"hidden\" name=\"lista\" value="+lista+">");
+            out.print("<td><input type=\"image\" name=\"enviar4\" src=\"img/regresar.png\"></td></tr>");
+            out.print("</form>");
+            }
+            %>
     </div>
+    
     </body>
 </html>

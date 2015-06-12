@@ -28,6 +28,24 @@ if( !Sesion.haySesion() ){
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <title><% out.print(titulo);%></title>
     <link rel="stylesheet" href="css/base-l.css">
+    <script type="text/javascript" src="js/jquery.js"></script>
+    <script>
+        function datosGuardados(){
+            alert("Lista Guardada");
+        }
+        
+        $(document).ready(function (){
+            <%
+            String consulta = Sesion.getAttr("Consulta");
+            if( consulta!=null ){
+                if( consulta.equals("OK") ){
+                    Sesion.eliminarAttr("Consulta");
+                    out.println("datosGuardados();");
+                }
+            }
+            %>
+        });
+    </script>
   </head>
   
   <body>

@@ -93,7 +93,7 @@ if( Sesion.hayDatosForm() ){
             <label>Nombre Usuario</label>
             <input type="text" name="alias" id="alias" placeholder="Escriba un alias o nickname" required>
             <label>Edad</label>
-            <input type="text" name="edad" id="edad" placeholder="Escriba su edad" required>
+            <input type="text" name="edad" id="edad" onkeypress="return validarEntero(event)" placeholder="Escriba su edad" required>
             <label>Contraseña</label>
             <input type="password" name="pass" id="pass" placeholder="Escriba su contraseña" required>
             <label>Confirmar Contraseña</label>

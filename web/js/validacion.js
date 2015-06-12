@@ -26,3 +26,16 @@ function soloNumeros(e){
 		return true;
 	return /\d/.test(String.fromCharCode(keynum));
 }
+
+function validarEntero(e) { 
+    tecla = (document.all) ? e.keyCode : e.which; 
+    if (tecla==8) return true; //Tecla de retroceso (para poder borrar) 
+    // dejar la línea de patron que se necesite y borrar el resto 
+    //patron =/[A-Za-z]/; // Solo acepta letras 
+    patron = /\d/; // Solo acepta números
+    //patron = /\w/; // Acepta números y letras 
+    //patron = /\D/; // No acepta números 
+    // 
+    te = String.fromCharCode(tecla); 
+    return patron.test(te);  
+}

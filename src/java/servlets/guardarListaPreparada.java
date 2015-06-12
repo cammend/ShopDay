@@ -56,11 +56,13 @@ public class guardarListaPreparada extends HttpServlet {
                         IODB.nuevoAbarrote(producto, marca, precio, cantidad, categoria, medida, alias);
                         int idA = IODB.getIdAbarrote(producto);
                         IODB.nuevoDetalleLista(codigo, idA, cantidad, 0, false);
+                        Sesion.setAttr("Consulta", "OK");
                         Redirect.irA("inicio.html", request, response);
                     }else{
                         Archivo.guardarCadena("Producto Existe!");
                         int idA = IODB.getIdAbarrote(producto);
                         IODB.nuevoDetalleLista(codigo, idA, cantidad, 0, false);
+                        Sesion.setAttr("Consulta", "OK");
                         Redirect.irA("inicio.html", request, response);
                     }
                 }else{

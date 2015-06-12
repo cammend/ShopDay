@@ -167,7 +167,7 @@ var numInputs = 0;
     Object cargar = Sesion.getAttr("CargarLista");
     if( cargar!=null ){
         Sesion.eliminarAttr("CargarLista");
-        ResultSet rs = IODB.getTabla("abarrote");
+        ResultSet rs = IODB.getFila("abarrote","idusuario",Sesion.getAliasUsuario());
         String[] campo = TablasDB.getCamposTabla("abarrote");
         try{
             out.println("function precargar(){");
